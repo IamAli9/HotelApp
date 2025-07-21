@@ -16,35 +16,22 @@ export class ReservationService {
   }
 
   getReservations(): Observable<Reservation[]> {
-    let result =this.http.get<Reservation[]>(this.baseApiUrl + '/reservations');
-    console.log('Getting Reservations :' + JSON.stringify(result));
-    return result;
+    return this.http.get<Reservation[]>(this.baseApiUrl + '/reservations');
   }
 
-  getReservationById(id:string): Reservation | undefined{
-    let reservation = this.reservations.find(res => res.id === id);
-    console.log('Getting Reservation By Id :' + JSON.stringify(this.reservations))
-    return reservation;
+  getReservationById(id:string): Observable<Reservation> {
+    return this.http.get<Reservation>(this.baseApiUrl + '/reservation/' + id);
   }
 
-  addReservation(reservation: Reservation): void {
-    reservation.id =  Date.now().toString();
-    this.reservations.push(reservation);
-  
+  addReservation(reservation: Reservation): Observable<void> {
+    return this.http.post<void>(this.baseApiUrl + '/reservation', reservation);
   }
 
-  deleteReservation(id: string): void {
-    let index = this.reservations.findIndex(res => res.id === id);
-    this.reservations.splice(index, 1);
-  
+  deleteReservation(id: string): Observable<void> {
+    return this.http.delete<void>(this.baseApiUrl +'/reservation/'+id);
   }
 
-  updateReservation(id: string, updatedReservation: Reservation): void {
-    let index = this.reservations.findIndex(res => res.id === id);
-    if (index !== -1) {
-      updatedReservation.id = id;
-      this.reservations[index] = updatedReservation;
-      
-    }
+  updateReservation(id: string, updatedReservation: Reservation): Observable<void> {
+    return this.http.put<void>(this.baseApiUrl + '/reservation/' + id, updatedReservation);
   }
 }
